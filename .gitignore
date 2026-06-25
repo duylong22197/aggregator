@@ -1,0 +1,4 @@
+bin/
+coverage.out
+profiles/*.prof
+.DS_Store
