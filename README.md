@@ -87,7 +87,7 @@ compute per-campaign totals and derived metrics (CTR, CPA), then output:
 **Requirements**:
 
 - Go 1.22+
-- Docker 24+ (for containerised builds)
+- Docker 20.10+ (for containerised builds)
 
 ```bash
 # Verify Go version
@@ -115,10 +115,10 @@ make run
 # defaults: INPUT=ad_data.csv  OUTPUT=./results  WORKERS=4
 ```
 
-Override any default with environment variables:
+> The default `INPUT=ad_data.csv` expects the file to be in the project root. If your CSV is elsewhere, override the path:
 
 ```bash
-make run INPUT=path/to/file.csv OUTPUT=path/to/output WORKERS=8
+make run INPUT=/path/to/ad_data.csv OUTPUT=./results WORKERS=4
 ```
 
 Only rebuild (`make build`) when you change the source code.

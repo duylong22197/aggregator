@@ -1,0 +1,7 @@
+*.csv
+*.zip
+bin/
+results/
+profiles/
+coverage.out
+.DS_Store
