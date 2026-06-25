@@ -2,17 +2,17 @@ goos: darwin
 goarch: arm64
 pkg: github.com/duylong22197/aggregator/benchmarks
 cpu: Apple M1
-BenchmarkAggregation-8         	      48	  21882449 ns/op	   4569876 rows/s	 3041636 B/op	    1033 allocs/op
-BenchmarkAggregation-8         	      60	  19255606 ns/op	   5193296 rows/s	 3041647 B/op	    1033 allocs/op
-BenchmarkAggregation-8         	      61	  19694468 ns/op	   5077571 rows/s	 3041225 B/op	    1032 allocs/op
-BenchmarkRankingTopCTR-8       	     471	   2442513 ns/op	  815525 B/op	  100205 allocs/op
-BenchmarkRankingTopCTR-8       	     453	   2463565 ns/op	  815705 B/op	  100207 allocs/op
-BenchmarkRankingTopCTR-8       	     492	   2424091 ns/op	  815682 B/op	  100207 allocs/op
-BenchmarkRankingTopCPA-8       	     490	   2364395 ns/op	  815850 B/op	  100210 allocs/op
-BenchmarkRankingTopCPA-8       	     519	   2376106 ns/op	  815626 B/op	  100206 allocs/op
-BenchmarkRankingTopCPA-8       	     496	   2281138 ns/op	  815610 B/op	  100206 allocs/op
-BenchmarkParseAndAggregate-8   	      51	  21797110 ns/op	 137.63 MB/s	  763857 B/op	    1033 allocs/op
-BenchmarkParseAndAggregate-8   	      50	  22269299 ns/op	 134.71 MB/s	  763816 B/op	    1033 allocs/op
-BenchmarkParseAndAggregate-8   	      51	  21559596 ns/op	 139.15 MB/s	  763980 B/op	    1033 allocs/op
+BenchmarkAggregation-8         	      55	  21173059 ns/op	   4722986 rows/s	 3041441 B/op	    1032 allocs/op
+BenchmarkAggregation-8         	      49	  21495360 ns/op	   4652167 rows/s	 3041440 B/op	    1032 allocs/op
+BenchmarkAggregation-8         	      50	  20609760 ns/op	   4852072 rows/s	 3041200 B/op	    1032 allocs/op
+BenchmarkRankingTopCTR-8       	     486	   2390835 ns/op	  815816 B/op	  100209 allocs/op
+BenchmarkRankingTopCTR-8       	     501	   2436950 ns/op	  815670 B/op	  100207 allocs/op
+BenchmarkRankingTopCTR-8       	     482	   2418802 ns/op	  815679 B/op	  100207 allocs/op
+BenchmarkRankingTopCPA-8       	     516	   2306513 ns/op	  815615 B/op	  100206 allocs/op
+BenchmarkRankingTopCPA-8       	     499	   2258302 ns/op	  815767 B/op	  100208 allocs/op
+BenchmarkRankingTopCPA-8       	     495	   2425861 ns/op	  815633 B/op	  100206 allocs/op
+BenchmarkParseAndAggregate-8   	      48	  22657371 ns/op	 132.41 MB/s	  764456 B/op	    1034 allocs/op
+BenchmarkParseAndAggregate-8   	      56	  23030959 ns/op	 130.26 MB/s	  763988 B/op	    1033 allocs/op
+BenchmarkParseAndAggregate-8   	      49	  23534688 ns/op	 127.47 MB/s	  764273 B/op	    1034 allocs/op
 PASS
-ok  	github.com/duylong22197/aggregator/benchmarks	17.070s
+ok  	github.com/duylong22197/aggregator/benchmarks	17.211s

@@ -32,6 +32,10 @@ func New(cfg Config) *Aggregator {
 // cfg.Workers goroutines, and merges results into a campaign stats map.
 // It blocks until jobs is closed and all workers have finished.
 func (a *Aggregator) Run(ctx context.Context, jobs <-chan []string) (map[string]*models.CampaignStats, error) {
+	if a.cfg.Workers < 1 {
+		return nil, fmt.Errorf("workers must be >= 1, got %d", a.cfg.Workers)
+	}
+
 	results := make(chan models.Record, defaultResultsBuffer)
 
 	// Closer goroutine: wait for all workers to finish then seal the results channel.
@@ -71,7 +75,11 @@ func worker(ctx context.Context, jobs <-chan []string, results chan<- models.Rec
 				slog.Warn("skipping invalid row", "error", err)
 				continue
 			}
-			results <- rec
+			select {
+			case results <- rec:
+			case <-ctx.Done():
+				return
+			}
 		}
 	}
 }

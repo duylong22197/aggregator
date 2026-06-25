@@ -71,11 +71,13 @@ func (r *Reader) Read(ctx context.Context, jobs chan<- []string) (ReadStats, err
 	}
 
 	var stats ReadStats
+	var totalLines int64 // every data line attempted, including skipped
 	for lineNum := int64(2); ; lineNum++ {
 		row, err := cr.Read()
 		if errors.Is(err, io.EOF) {
 			break
 		}
+		totalLines++
 		if err != nil {
 			slog.Warn("skipping unreadable row", "line", lineNum, "error", err)
 			stats.RowsSkipped++
@@ -101,8 +103,8 @@ func (r *Reader) Read(ctx context.Context, jobs chan<- []string) (ReadStats, err
 		}
 		stats.RowsProcessed++
 
-		if stats.RowsProcessed%progressEvery == 0 {
-			slog.Info("rows read", "count", stats.RowsProcessed)
+		if totalLines%progressEvery == 0 {
+			slog.Info("rows read", "total", totalLines, "skipped", stats.RowsSkipped)
 		}
 	}
 

@@ -124,7 +124,7 @@ func (h *ctrMinHeap) Pop() any {
 type cpaMaxHeap []models.CampaignResult
 
 func (h cpaMaxHeap) Len() int           { return len(h) }
-func (h cpaMaxHeap) Less(i, j int) bool { return *h[i].CPA > *h[j].CPA }
+func (h cpaMaxHeap) Less(i, j int) bool { return cpaValue(h[i]) > cpaValue(h[j]) }
 func (h cpaMaxHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
 func (h *cpaMaxHeap) Push(x any) { *h = append(*h, x.(models.CampaignResult)) }
