@@ -3,6 +3,7 @@ package aggregator
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/duylong22197/aggregator/internal/models"
 )
@@ -154,6 +155,45 @@ func TestParseRow_NegativeValues(t *testing.T) {
 	}
 }
 
+func TestRun_WorkersZero_ReturnsError(t *testing.T) {
+	jobs := feedJobs(nil)
+	_, err := New(Config{Workers: 0}).Run(context.Background(), jobs)
+	if err == nil {
+		t.Fatal("expected error for Workers: 0, got nil")
+	}
+}
+
+func TestRun_WorkersNegative_ReturnsError(t *testing.T) {
+	jobs := feedJobs(nil)
+	_, err := New(Config{Workers: -1}).Run(context.Background(), jobs)
+	if err == nil {
+		t.Fatal("expected error for Workers: -1, got nil")
+	}
+}
+
+func TestRun_PreCancelledContext_DoesNotHang(t *testing.T) {
+	jobs := feedJobs([][]string{
+		{"CMP001", "1000", "50", "100.00", "5"},
+		{"CMP002", "2000", "60", "120.00", "10"},
+	})
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel() // cancel before Run is called
+
+	// Must return promptly without hanging — does not panic or deadlock.
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		New(Config{Workers: 2}).Run(ctx, jobs) //nolint:errcheck
+	}()
+
+	select {
+	case <-done:
+	case <-time.After(time.Second):
+		t.Fatal("Run did not return after pre-cancelled context")
+	}
+}
+
 func TestAggregate_ZeroConversions(t *testing.T) {
 	results := make(chan models.Record, 1)
 	results <- models.Record{CampaignID: "CMP001", Impressions: 1000, Clicks: 0, Spend: 0, Conversions: 0}
@@ -162,6 +202,42 @@ func TestAggregate_ZeroConversions(t *testing.T) {
 	stats := aggregate(results)
 	if stats["CMP001"].TotalConversions != 0 {
 		t.Errorf("expected zero conversions")
+	}
+}
+
+// TestWorker_ExitsOnCancellation_WhenResultsBlocked proves that a worker does
+// not hang indefinitely on "results <- rec" when the results channel is full
+// and the context is cancelled.
+//
+// Synchronisation strategy: both jobs and results are unbuffered.
+// The send `jobs <- row` blocks until the worker receives it — this is a
+// happens-before guarantee that the worker holds the record and is about to
+// reach `results <- rec` when we call cancel(). No time.Sleep needed.
+func TestWorker_ExitsOnCancellation_WhenResultsBlocked(t *testing.T) {
+	results := make(chan models.Record) // unbuffered — blocks worker on send
+	jobs := make(chan []string)         // unbuffered — synchronises with worker receive
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		worker(ctx, jobs, results)
+	}()
+
+	// Blocks until the worker receives the row. After this returns, the worker
+	// has the record and is about to block on `results <- rec`.
+	jobs <- []string{"CMP001", "1000", "50", "100.00", "5"}
+
+	// Cancel the context — the inner select must unblock the worker.
+	cancel()
+
+	select {
+	case <-done:
+		// passed: worker exited promptly after cancellation
+	case <-time.After(time.Second):
+		t.Fatal("worker blocked on results send and did not exit after context cancellation")
 	}
 }
 
