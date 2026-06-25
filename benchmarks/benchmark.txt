@@ -1,24 +1,18 @@
-# Benchmark Results
-# Run: go test -bench=. -benchmem ./benchmarks/
-# Generated: <run date>
-
-goos: <os>
-goarch: <arch>
+goos: darwin
+goarch: arm64
 pkg: github.com/duylong22197/aggregator/benchmarks
-
-BenchmarkAggregation-<N>           <iterations>   <ns/op>   <rows/s>   <B/op>   <allocs/op>
-BenchmarkRankingTopCTR-<N>         <iterations>   <ns/op>              <B/op>   <allocs/op>
-BenchmarkRankingTopCPA-<N>         <iterations>   <ns/op>              <B/op>   <allocs/op>
-BenchmarkParseAndAggregate-<N>     <iterations>   <ns/op>   <MB/s>     <B/op>   <allocs/op>
-
-# Real-world pipeline results (run against ad_data.csv, 4 workers, Apple M-series):
-#
-# Dataset Size   : ~995 MB (1,043,304,870 bytes)
-# Row Count      : 26,843,544
-# Campaign Count : 50
-# Execution Time : ~11.4s
-# Rows/second    : ~2,354,000
-# Peak Memory    : O(unique_campaigns) — 50 campaigns, negligible heap above baseline
-#
-# To populate this file, run:
-#   go test -bench=. -benchmem ./benchmarks/ | tee benchmarks/benchmark.txt
+cpu: Apple M1
+BenchmarkAggregation-8         	      48	  21882449 ns/op	   4569876 rows/s	 3041636 B/op	    1033 allocs/op
+BenchmarkAggregation-8         	      60	  19255606 ns/op	   5193296 rows/s	 3041647 B/op	    1033 allocs/op
+BenchmarkAggregation-8         	      61	  19694468 ns/op	   5077571 rows/s	 3041225 B/op	    1032 allocs/op
+BenchmarkRankingTopCTR-8       	     471	   2442513 ns/op	  815525 B/op	  100205 allocs/op
+BenchmarkRankingTopCTR-8       	     453	   2463565 ns/op	  815705 B/op	  100207 allocs/op
+BenchmarkRankingTopCTR-8       	     492	   2424091 ns/op	  815682 B/op	  100207 allocs/op
+BenchmarkRankingTopCPA-8       	     490	   2364395 ns/op	  815850 B/op	  100210 allocs/op
+BenchmarkRankingTopCPA-8       	     519	   2376106 ns/op	  815626 B/op	  100206 allocs/op
+BenchmarkRankingTopCPA-8       	     496	   2281138 ns/op	  815610 B/op	  100206 allocs/op
+BenchmarkParseAndAggregate-8   	      51	  21797110 ns/op	 137.63 MB/s	  763857 B/op	    1033 allocs/op
+BenchmarkParseAndAggregate-8   	      50	  22269299 ns/op	 134.71 MB/s	  763816 B/op	    1033 allocs/op
+BenchmarkParseAndAggregate-8   	      51	  21559596 ns/op	 139.15 MB/s	  763980 B/op	    1033 allocs/op
+PASS
+ok  	github.com/duylong22197/aggregator/benchmarks	17.070s

@@ -1,3 +1,3 @@
 module github.com/duylong22197/aggregator
 
-go 1.26.3
+go 1.22
