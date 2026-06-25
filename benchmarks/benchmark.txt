@@ -1,0 +1,24 @@
+# Benchmark Results
+# Run: go test -bench=. -benchmem ./benchmarks/
+# Generated: <run date>
+
+goos: <os>
+goarch: <arch>
+pkg: github.com/duylong22197/aggregator/benchmarks
+
+BenchmarkAggregation-<N>           <iterations>   <ns/op>   <rows/s>   <B/op>   <allocs/op>
+BenchmarkRankingTopCTR-<N>         <iterations>   <ns/op>              <B/op>   <allocs/op>
+BenchmarkRankingTopCPA-<N>         <iterations>   <ns/op>              <B/op>   <allocs/op>
+BenchmarkParseAndAggregate-<N>     <iterations>   <ns/op>   <MB/s>     <B/op>   <allocs/op>
+
+# Real-world pipeline results (run against ad_data.csv, 4 workers, Apple M-series):
+#
+# Dataset Size   : ~995 MB (1,043,304,870 bytes)
+# Row Count      : 26,843,544
+# Campaign Count : 50
+# Execution Time : ~11.4s
+# Rows/second    : ~2,354,000
+# Peak Memory    : O(unique_campaigns) — 50 campaigns, negligible heap above baseline
+#
+# To populate this file, run:
+#   go test -bench=. -benchmem ./benchmarks/ | tee benchmarks/benchmark.txt
